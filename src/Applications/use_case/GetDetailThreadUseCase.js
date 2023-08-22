@@ -3,11 +3,12 @@ const NormalizeReply = require('../../Domains/replies/entities/NormalizeReply');
 
 class GetDetailThreadUseCase {
   constructor({
-    threadRepository, commentRepository, replyRepository
+    threadRepository, commentRepository, replyRepository, likeRepository,
   }) {
     this._threadrepository = threadRepository;
     this._commentRepository = commentRepository;
     this._replyRepository = replyRepository;
+    this._likeRepository = likeRepository;
   }
 
   async execute(useCasePayload) {
@@ -22,6 +23,7 @@ class GetDetailThreadUseCase {
 
         return {
           ...(NormalizeComment.normalize(comment)),
+          likeCount: await this._likeRepository.getLikeCount(comment.id),
           replies: replies.map((reply) => NormalizeReply.normalize(reply)),
         };
       }))),
